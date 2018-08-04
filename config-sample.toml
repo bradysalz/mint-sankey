@@ -1,9 +1,28 @@
-prefer_labels = true # if true, have labels override categories
+[time]
+# Dates should be in MM/DD/YYYY format, with optional leading zeros
+start_date = "7/1/2018"
+end_date = "8/1/2018"
+
+[transactions]
+prefer_labels = true # have labels override categories
+
+# Vendors to ignore
+ignore_vendors = [
+    "Abacus Labs Expense"
+]
+
+# Categories to ignore
 ignore_categories = [
     "Credit Card Payment",
     "ATM Fee",
+    "Work Purchase",
+    "Income"
 ]
 
+# Mint is a bit verbose on the categories by default, so
+# any category with a sumnmed value below the threshold
+# will get bundled as 'Misc'
+category_threshold = 15
 
 [paths]
 use_custom_input = true
@@ -11,9 +30,6 @@ input_file = "/home/YourName/budgets/your_transactions.csv"
 
 use_custom_output = false
 # output_path = "/home/somewhere/else"
-
-
-
 
 ############## WARNING ##############
 # Make sure not to commit or share anything personal here!

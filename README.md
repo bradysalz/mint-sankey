@@ -25,6 +25,15 @@ Copy `config-sample.toml` to `config.toml` and edit away.
 
 Run the tool with `python sankey-gen.py`. The default output file is `output.txt`. Copy the contents of that file into [SankeyMatic](http://sankeymatic.com) and enjoy!
 
+## TODOs
+
+High level features I'd like to add:
+
+* Support for different time periods (right now hard-coded as month for income)
+* Add example `transactions.csv` and `output.txt` as a reference
+* More tests in `sankey-gen.py`
+* Learn some sort of CI tool!
+
 ## License
 
 Do what you want, see `LICENSE.md`
