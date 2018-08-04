@@ -1,0 +1,33 @@
+
+custom_path = true # if true, ignore data/ directory
+
+# file_path must be set if use_custom_path is true
+# file_path = "/home/YourName/budgets/your_transactions.csv"
+
+prefer_labels = true # if true, have labels override categories
+ignore_categories = [
+    "Credit Card Payment",
+    "ATM Fee",
+]
+
+percentages = false # if true, output percentages instead of absolute values
+
+
+
+############## WARNING ##############
+# Make sure not to commit or share anything personal here!
+# All numbers here are assumed to be biweekly
+# Please scale by the appropriate factor if not
+[money]
+net_earnings = 1000
+
+    [money.pretax]
+    "Federal Income Tax" = 100
+    "Social Security" = 30
+    "Medicare" = 50
+    "State Income Tax" = 50
+    # "Health Insurance" = 1
+    # "Dental Insurance" = 2
+    # "Vision Insurance" = 3
+    # "401k" = 401
+    # can add as many key-value pairs as you'd like
