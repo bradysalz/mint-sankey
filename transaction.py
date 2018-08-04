@@ -45,9 +45,9 @@ class Transaction:
         """
         self.date = datetime.strptime(data[0], "%m/%d/%Y")
         self.vendor = data[1]
-        self.amount = data[3]
-        self.debit = data[4]
-        self.category = data[6]
+        self.amount = int(float(data[3]))
+        self.debit = True if data[4] == 'debit' else False
+        self.category = data[5]
         self.label = data[7]
 
     def make_sakey_string(self) -> str:
@@ -55,8 +55,6 @@ class Transaction:
 
         The format is:
             {Source} [{Amount}] {Type}
-
-        More info can be found here: http://sankeymatic.com/build/
         """
         if self.source:
             return f"{self.source.category} [{self.amount}] {self.category}"
