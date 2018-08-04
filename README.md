@@ -1,6 +1,7 @@
 # Mint Sankey
 
-![](https://img.shields.io/badge/python-3.6-brightgreen.svg)
+![Version](https://img.shields.io/badge/python-3.6-brightgreen.svg)
+[![Build Status](https://travis-ci.org/bradysalz/mint-sankey.svg?branch=master)](https://travis-ci.org/bradysalz/mint-sankey)
 
 `mint-sankey` is a tool that will take your [Mint](https://www.mint.com) transactions, combine it with your paycheck info, and dump text data out so that [SankeyMatic](http://sankeymatic.com) can read it.
 
