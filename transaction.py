@@ -43,7 +43,7 @@ class Transaction:
         Args:
             data: list form of a transaction csv row
         """
-        self.date = data[0]
+        self.date = datetime.strptime(data[0], "%m/%d/%Y")
         self.vendor = data[1]
         self.amount = data[3]
         self.debit = data[4]
