@@ -5,7 +5,8 @@ See the README for more info.
 """
 import csv
 from datetime import datetime
-from typing import Dict, List, TextIO
+import typing
+from typing import Dict, List
 
 import toml
 
@@ -36,7 +37,7 @@ def parse_csv(fname: str) -> List[Transaction]:
     return transactions
 
 
-def add_paystub(f: TextIO, earnings: float, pretax_vals: Dict, *,
+def add_paystub(f: typing.IO, earnings: float, pretax_vals: Dict, *,
                 scale: float) -> int:
     """Create SankeyMatic strings from configuration income+pretax info
 
@@ -60,7 +61,7 @@ def add_paystub(f: TextIO, earnings: float, pretax_vals: Dict, *,
         take_home -= value * scale
 
     f.write(f'Wages [{take_home}] Take Home\n')
-    return take_home
+    return int(take_home)
 
 
 def filter_transactions(transactions: List[Transaction], start_date: datetime,
@@ -135,7 +136,7 @@ def summarize_transactions(transactions: List[Transaction], use_labels: bool,
     return category_sums
 
 
-def add_transactions(f: TextIO, transactions: List[Transaction],
+def add_transactions(f: typing.IO, transactions: List[Transaction],
                      take_home: int, config: Dict):
     """Generate SankeyMatic strings from filtered transactions
 

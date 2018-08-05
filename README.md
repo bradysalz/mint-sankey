@@ -33,7 +33,21 @@ High level features I'd like to add:
 * Support for different time periods (right now hard-coded as month for income)
 * Add example `transactions.csv` and `output.txt` as a reference
 * More tests in `sankey-gen.py`
-* Learn some sort of CI tool!
+
+## Style & Formatting
+
+I use:
+
+* `yapf` for formatting
+* `flake8` for linting
+* `pyre` for type checking
+
+In general, I try to be `yapf` and `flake8` issue free, and minimize as many errors as possible from `pyre`. Once the errors start showing up as a result of other (`pip`-installed) modules, I punt on them. To use these, run:
+
+```
+pip install -r requirements-dev.txt
+pyre init
+```
 
 ## License
 
