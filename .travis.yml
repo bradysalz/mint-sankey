@@ -4,4 +4,6 @@ python:
 install:
     - pip install -r requirements-dev.txt
 script:
-  python -m pytest --cov=.
+  coverage run -m pytest --cov=.
+after_sucess:
+  coveralls
