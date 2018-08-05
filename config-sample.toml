@@ -1,22 +1,20 @@
 [time]
 # Dates should be in MM/DD/YYYY format, with optional leading zeros
-start_date = "7/1/2018"
+start_date = "5/1/2018"
 end_date = "8/1/2018"
 
 [transactions]
 prefer_labels = true # have labels override categories
+use_percentages = false # output in relative percentages
 
 # Vendors to ignore
 ignore_vendors = [
-    "Abacus Labs Expense"
+    "Bad Vendor"
 ]
 
 # Categories to ignore
 ignore_categories = [
-    "Credit Card Payment",
-    "ATM Fee",
-    "Work Purchase",
-    "Income"
+    "Bad Category",
 ]
 
 # Mint is a bit verbose on the categories by default, so
@@ -26,25 +24,19 @@ category_threshold = 15
 
 [paths]
 use_custom_input = true
-input_file = "/home/YourName/budgets/your_transactions.csv"
+input_file = "data/test-data.csv"
 
 use_custom_output = false
-# output_path = "/home/somewhere/else"
+output_path = "output-test.txt"
 
 ############## WARNING ##############
 # Make sure not to commit or share anything personal here!
 # All numbers here are assumed to be biweekly
 # Please scale by the appropriate factor if not
 [paycheck]
-net_earnings = 1000
+net_earnings = 150
 
     #### add as many key-value pairs as you have
     [paycheck.pretax]
-    "Federal Income Tax" = 100
-    "Social Security" = 30
-    "Medicare" = 50
-    "State Income Tax" = 50
-    # "Health Insurance" = 1
-    # "Dental Insurance" = 2
-    # "Vision Insurance" = 3
-    # "401k" = 401
+    "Federal Income Tax" = 30
+    "Social Security" = 5

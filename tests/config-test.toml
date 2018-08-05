@@ -5,6 +5,7 @@ end_date = "8/1/2018"
 
 [transactions]
 prefer_labels = true # have labels override categories
+use_percentages = false # output in relative percentages
 
 # Vendors to ignore
 ignore_vendors = [

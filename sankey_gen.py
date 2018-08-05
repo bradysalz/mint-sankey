@@ -37,8 +37,12 @@ def parse_csv(fname: str) -> List[Transaction]:
     return transactions
 
 
-def add_paystub(f: typing.IO, earnings: float, pretax_vals: Dict, *,
-                scale: float) -> int:
+def add_paystub(f: typing.IO,
+                earnings: float,
+                pretax_vals: Dict,
+                *,
+                scale: float = 2,
+                use_percent: bool = False) -> int:
     """Create SankeyMatic strings from configuration income+pretax info
 
     Args:
@@ -46,6 +50,7 @@ def add_paystub(f: typing.IO, earnings: float, pretax_vals: Dict, *,
         earnings: net income
         pretax_vals: dictionary with all pretax items and their value
         scale: scaling factor to apply to all values (based on time period)
+        use_percent:
 
         The format is:
             {Source} [{Amount}] {Type}
@@ -57,10 +62,18 @@ def add_paystub(f: typing.IO, earnings: float, pretax_vals: Dict, *,
     sorted_pretax = sorted(pretax_vals.items(), key=lambda kv: kv[1])
     sorted_pretax.reverse()
     for name, value in sorted_pretax:
-        f.write(f'Wages [{int(value * scale)}] {name}\n')
+        if use_percent:
+            f.write(f'Wages [{int(100 * value / earnings)}] {name}\n')
+        else:
+            f.write(f'Wages [{int(value * scale)}] {name}\n')
+
         take_home -= value * scale
 
-    f.write(f'Wages [{int(take_home)}] Take Home\n')
+    if use_percent:
+        f.write(
+            f'Wages [{int(100 * take_home / earnings / scale)}] Take Home\n')
+    else:
+        f.write(f'Wages [{int(take_home)}] Take Home\n')
     return int(take_home)
 
 
@@ -167,10 +180,16 @@ def add_transactions(f: typing.IO, transactions: List[Transaction],
     sorted_cat = sorted(summed_categories.items(), key=lambda kv: kv[1])
     sorted_cat.reverse()
     for name, value in sorted_cat:
-        f.write(f'Take Home [{value}] {name}\n')
+        if config['transactions']['use_percentages']:
+            f.write(f'Take Home [{int(100 * value / take_home)}] {name}\n')
+        else:
+            f.write(f'Take Home [{value}] {name}\n')
         expenditure += value
 
-    savings = take_home - expenditure
+    if config['transactions']['use_percentages']:
+        savings = int(100 * (take_home - expenditure) / take_home)
+    else:
+        savings = take_home - expenditure
     f.write(f'Take Home [{savings}] Savings\n')
 
 
@@ -207,7 +226,8 @@ def main(*, config_file: str = None):
         output_file,
         config['paycheck']['net_earnings'],
         config['paycheck']['pretax'],
-        scale=scale)
+        scale=scale,
+        use_percent=config['transactions']['use_percentages'])
 
     add_transactions(output_file, transactions, take_home, config)
 
