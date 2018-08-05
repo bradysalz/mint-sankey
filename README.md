@@ -30,7 +30,6 @@ Run the tool with `python sankey-gen.py`. The default output file is `output.txt
 
 High level features I'd like to add:
 
-* Support for different time periods (right now hard-coded as month for income)
 * Add example `transactions.csv` and `output.txt` as a reference
 * More tests in `sankey-gen.py`
 

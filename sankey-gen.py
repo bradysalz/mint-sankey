@@ -57,10 +57,10 @@ def add_paystub(f: typing.IO, earnings: float, pretax_vals: Dict, *,
     sorted_pretax = sorted(pretax_vals.items(), key=lambda kv: kv[1])
     sorted_pretax.reverse()
     for name, value in sorted_pretax:
-        f.write(f'Wages [{value * scale}] {name}\n')
+        f.write(f'Wages [{int(value * scale)}] {name}\n')
         take_home -= value * scale
 
-    f.write(f'Wages [{take_home}] Take Home\n')
+    f.write(f'Wages [{int(take_home)}] Take Home\n')
     return int(take_home)
 
 
@@ -194,14 +194,16 @@ if __name__ == "__main__":
 
     output_file = open(fname, 'w')
 
+    start_date = datetime.strptime(config['time']['start_date'], '%m/%d/%Y')
+    end_date = datetime.strptime(config['time']['end_date'], '%m/%d/%Y')
+    scale = (end_date - start_date).days / 14
+
     take_home = add_paystub(
         output_file,
         config['paycheck']['net_earnings'],
         config['paycheck']['pretax'],
-        scale=2)
+        scale=scale)
 
-    start_date = datetime.strptime('6/1/2018', '%m/%d/%Y')
-    end_date = datetime.strptime('7/1/2018', '%m/%d/%Y')
     add_transactions(output_file, transactions, take_home, config)
 
     output_file.close()
