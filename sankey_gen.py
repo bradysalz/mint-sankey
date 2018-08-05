@@ -174,13 +174,18 @@ def add_transactions(f: typing.IO, transactions: List[Transaction],
     f.write(f'Take Home [{savings}] Savings\n')
 
 
-if __name__ == "__main__":
-    try:
-        config_file = open('config.toml', 'r')
-    except IOError:
-        config_file = open('config-sample.toml', 'r')
+def main(*, config_file: str = None):
+    """Generate the SankeyMatic-formatted data"""
+    if config_file:
+        config_file = open(config_file, 'r')
+    else:
+        try:
+            config_file = open('config.toml', 'r')
+        except IOError:
+            config_file = open('config-sample.toml', 'r')
 
     config = toml.load(config_file)
+    config_file.close()
 
     if config['paths']['use_custom_input']:
         transactions = parse_csv(config['paths']['input_file'])
@@ -207,3 +212,7 @@ if __name__ == "__main__":
     add_transactions(output_file, transactions, take_home, config)
 
     output_file.close()
+
+
+if __name__ == "__main__":
+    main()

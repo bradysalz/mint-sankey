@@ -5,6 +5,19 @@ import transaction
 
 
 class TestTransaction(unittest.TestCase):
+    def test_load_from_csv(self):
+        t = transaction.Transaction()
+        t.load_from_csv([
+            '01/01/2018', 'Wendys', 'More info on the Baconator', '12.1',
+            'debit', 'Entertainment', 'Some Account', '', ''
+        ])
+
+        self.assertEqual(t.date, datetime.strptime('01/01/2018', '%m/%d/%Y'))
+        self.assertEqual(t.vendor, 'Wendys')
+        self.assertEqual(t.amount, 12)
+        self.assertEqual(t.debit, True)
+        self.assertEqual(t.category, 'Entertainment')
+
     def test_sakey_gen(self):
         now = datetime.now()
         t1 = transaction.Transaction(

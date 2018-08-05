@@ -1,6 +1,7 @@
 ##### Project specific ignore
 config.toml
 output.txt
+output-test.txt
 .pyre_configuration
 .pyre/
 .vscode/
