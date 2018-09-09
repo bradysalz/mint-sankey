@@ -34,8 +34,10 @@ class TestSankeyGen(unittest.TestCase):
             func_results = f.readlines()
 
         test_results = [
-            "Wages [100] Federal Income Tax\n", "Wages [30] Social Security\n",
-            "Wages [870] Take Home\n"
+            "Spending [1000] Wages\n",
+            "Wages [100] Federal Income Tax\n",
+            "Wages [30] Social Security\n",
+            "Wages [870] Take Home\n",
         ]
 
         self.assertListEqual(func_results, test_results)
@@ -52,9 +54,10 @@ class TestSankeyGen(unittest.TestCase):
             end_date=end_date,
             vendors=[],
             categories=[],
+            ignore=True,
             use_labels=False)
 
-        self.assertEqual(len(results), 4)
+        self.assertEqual(len(results), 3)
 
     def test_filter_by_vendor(self):
         trans = sankey_gen.parse_csv('data/test-data.csv')
@@ -68,9 +71,10 @@ class TestSankeyGen(unittest.TestCase):
             end_date=end_date,
             vendors=self.config['transactions']['ignore_vendors'],
             categories=[],
+            ignore=True,
             use_labels=False)
 
-        self.assertEqual(len(results), 10)
+        self.assertEqual(len(results), 9)
 
     def test_filter_by_category(self):
         trans = sankey_gen.parse_csv('data/test-data.csv')
@@ -84,9 +88,10 @@ class TestSankeyGen(unittest.TestCase):
             end_date=end_date,
             vendors=[],
             categories=self.config['transactions']['ignore_categories'],
+            ignore=True,
             use_labels=False)
 
-        self.assertEqual(len(results), 10)
+        self.assertEqual(len(results), 9)
 
     def test_filter_by_label(self):
         trans = sankey_gen.parse_csv('data/test-data.csv')
@@ -100,9 +105,10 @@ class TestSankeyGen(unittest.TestCase):
             end_date=end_date,
             vendors=[],
             categories=self.config['transactions']['ignore_categories'],
+            ignore=True,
             use_labels=True)
 
-        self.assertEqual(len(results), 9)
+        self.assertEqual(len(results), 8)
 
     def test_summarize_transactions(self):
         trans = sankey_gen.parse_csv('data/test-data.csv')
@@ -173,9 +179,11 @@ class TestSankeyGen(unittest.TestCase):
             results = f.readlines()
 
         expected = [
+            'Spending [2214] Wages\n',
             'Wages [221] Federal Income Tax\n',
             'Wages [66] Social Security\n',
             'Wages [1926] Take Home\n',
+            'Spending [0] Work\n',
             'Take Home [78] Hotel\n',
             'Take Home [12] Misc\n',
             'Take Home [1836] Savings\n',

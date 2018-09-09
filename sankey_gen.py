@@ -50,7 +50,7 @@ def add_paystub(f: typing.IO,
         earnings: net income
         pretax_vals: dictionary with all pretax items and their value
         scale: scaling factor to apply to all values (based on time period)
-        use_percent:
+        use_percent: use percentages or absolute vals
 
         The format is:
             {Source} [{Amount}] {Type}
@@ -59,6 +59,11 @@ def add_paystub(f: typing.IO,
             total take home income over the plotting period
     """
     take_home = earnings * scale
+    if use_percent:
+        f.write(f'Spending [{int(100)}] Wages\n')
+    else:
+        f.write(f'Spending [{int(take_home)}] Wages\n')
+
     sorted_pretax = sorted(pretax_vals.items(), key=lambda kv: kv[1])
     sorted_pretax.reverse()
     for name, value in sorted_pretax:
@@ -70,16 +75,17 @@ def add_paystub(f: typing.IO,
         take_home -= value * scale
 
     if use_percent:
-        f.write(
-            f'Wages [{int(100 * take_home / earnings / scale)}] Take Home\n')
+        val = int(100 * take_home / earnings / scale)
     else:
-        f.write(f'Wages [{int(take_home)}] Take Home\n')
+        val = int(take_home)
+    f.write(f'Wages [{val}] Take Home\n')
+
     return int(take_home)
 
 
 def filter_transactions(transactions: List[Transaction], start_date: datetime,
                         end_date: datetime, vendors: List[str],
-                        categories: List[str],
+                        categories: List[str], ignore: bool,
                         use_labels: bool) -> List[Transaction]:
     """Filter transactions based on date, vendor, and type
 
@@ -87,8 +93,10 @@ def filter_transactions(transactions: List[Transaction], start_date: datetime,
         transactions: list of all transactions
         start_date: ignore all transactions before this date
         end_date: ignore all transactions after this date
-        vendors: ignore all transactions from these vendors
-        categories: ignore all transactions within these categories
+        vendors: filter transactions from these vendors
+        categories: filter transactions within these categories
+        ignore: if True, ignore transactions from above filters
+            else, only return transactions from above filters
         use_labels: check labels in addition to categories
 
     Returns:
@@ -100,13 +108,26 @@ def filter_transactions(transactions: List[Transaction], start_date: datetime,
         if t.date <= start_date or t.date >= end_date:
             continue
 
-        if t.vendor in vendors:
-            continue
+        if ignore:
+            if t.vendor in vendors:
+                continue
 
-        if use_labels and t.label in categories:
-            continue
+            if use_labels and t.label in categories:
+                continue
 
-        if t.category in categories:
+            if t.category in categories:
+                continue
+        else:
+            if vendors and t.vendor not in vendors:
+                continue
+
+            if use_labels and t.label not in categories:
+                continue
+
+            if not use_labels and t.category not in categories:
+                continue
+
+        if not t.debit:
             continue
 
         filt_trans.append(t)
@@ -149,6 +170,40 @@ def summarize_transactions(transactions: List[Transaction], use_labels: bool,
     return category_sums
 
 
+def add_work_transactions(f: typing.IO, transactions: List[Transaction],
+                          config: Dict):
+    """Generate SankeyMatic strings from filtered work transactions
+
+    Args:
+        f: output file
+        transactions: list of all transactions
+        config: config file
+    """
+
+    start_date = datetime.strptime(config['time']['start_date'], '%m/%d/%Y')
+    end_date = datetime.strptime(config['time']['end_date'], '%m/%d/%Y')
+
+    filt_trans = filter_transactions(
+        transactions=transactions,
+        start_date=start_date,
+        end_date=end_date,
+        vendors=[],
+        categories=['Work Purchase'],
+        ignore=False,
+        use_labels=config['transactions']['prefer_labels'])
+
+    summed_categories = summarize_transactions(
+        transactions=filt_trans,
+        use_labels=config['transactions']['prefer_labels'],
+        threshold=config['transactions']['category_threshold'])
+
+    work_total = sum(summed_categories.values())
+    if config['transactions']['use_percentages']:
+        f.write(f'Spending [100] Work\n')
+    else:
+        f.write(f'Spending [{work_total}] Work\n')
+
+
 def add_transactions(f: typing.IO, transactions: List[Transaction],
                      take_home: int, config: Dict):
     """Generate SankeyMatic strings from filtered transactions
@@ -169,6 +224,7 @@ def add_transactions(f: typing.IO, transactions: List[Transaction],
         end_date=end_date,
         vendors=config['transactions']['ignore_vendors'],
         categories=config['transactions']['ignore_categories'],
+        ignore=True,
         use_labels=config['transactions']['prefer_labels'])
 
     summed_categories = summarize_transactions(
@@ -229,6 +285,7 @@ def main(*, config_file: str = None):
         scale=scale,
         use_percent=config['transactions']['use_percentages'])
 
+    add_work_transactions(output_file, transactions, config)
     add_transactions(output_file, transactions, take_home, config)
 
     output_file.close()
