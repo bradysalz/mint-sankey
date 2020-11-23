@@ -1,4 +1,5 @@
 from datetime import datetime
+from enum import Enum
 from typing import List
 
 
@@ -60,3 +61,4 @@ class Transaction:
             return f"{self.source.category} [{self.amount}] {self.category}"
         else:
             return f"NULL [{self.amount}] {self.category}"
+

@@ -6,12 +6,18 @@ See the README for more info.
 import csv
 from datetime import datetime
 import typing
+from enum import Enum
 from typing import Dict, List
 
 import toml
 
 from transaction import Transaction
 
+
+class TransactionType(Enum):
+    DEBIT = "debit",
+    CREDIT = "credit",
+    BOTH = ""
 
 def parse_csv(fname: str) -> List[Transaction]:
     """Parse a CSV file into a list of transactions
@@ -86,7 +92,8 @@ def add_paystub(f: typing.IO,
 def filter_transactions(transactions: List[Transaction], start_date: datetime,
                         end_date: datetime, vendors: List[str],
                         categories: List[str], ignore: bool,
-                        use_labels: bool) -> List[Transaction]:
+                        use_labels: bool,
+                        transaction_type: TransactionType = TransactionType.DEBIT) -> List[Transaction]:
     """Filter transactions based on date, vendor, and type
 
     Args:
@@ -98,6 +105,7 @@ def filter_transactions(transactions: List[Transaction], start_date: datetime,
         ignore: if True, ignore transactions from above filters
             else, only return transactions from above filters
         use_labels: check labels in addition to categories
+        transaction_type: only include Transaction Type if not both
 
     Returns:
         Filtered list of transactions
@@ -127,8 +135,9 @@ def filter_transactions(transactions: List[Transaction], start_date: datetime,
             if not use_labels and t.category not in categories:
                 continue
 
-        if not t.debit:
-            continue
+        if transaction_type is not TransactionType.BOTH:
+            if (transaction_type is TransactionType.DEBIT and not t.debit) or (transaction_type is TransactionType.CREDIT and t.debit):
+                continue
 
         filt_trans.append(t)
     return filt_trans
@@ -170,9 +179,9 @@ def summarize_transactions(transactions: List[Transaction], use_labels: bool,
     return category_sums
 
 
-def add_work_transactions(f: typing.IO, transactions: List[Transaction],
-                          config: Dict):
-    """Generate SankeyMatic strings from filtered work transactions
+def add_income_transactions(f: typing.IO, transactions: List[Transaction],
+                            config: Dict) -> int:
+    """Generate SankeyMatic strings from Income credit
 
     Args:
         f: output file
@@ -188,9 +197,10 @@ def add_work_transactions(f: typing.IO, transactions: List[Transaction],
         start_date=start_date,
         end_date=end_date,
         vendors=[],
-        categories=['Work Purchase'],
-        ignore=False,
-        use_labels=config['transactions']['prefer_labels'])
+        categories=[],
+        ignore=True,
+        use_labels=config['transactions']['prefer_labels'],
+        transaction_type=TransactionType.CREDIT)
 
     summed_categories = summarize_transactions(
         transactions=filt_trans,
@@ -199,9 +209,11 @@ def add_work_transactions(f: typing.IO, transactions: List[Transaction],
 
     work_total = sum(summed_categories.values())
     if config['transactions']['use_percentages']:
-        f.write(f'Spending [100] Work\n')
+        f.write(f'Wages [100] Take Home\n')
     else:
-        f.write(f'Spending [{work_total}] Work\n')
+        f.write(f'Wages [{work_total}] Take Home\n')
+
+    return work_total
 
 
 def add_transactions(f: typing.IO, transactions: List[Transaction],
@@ -278,14 +290,14 @@ def main(*, config_file: str = None):
     end_date = datetime.strptime(config['time']['end_date'], '%m/%d/%Y')
     scale = (end_date - start_date).days / 14
 
-    take_home = add_paystub(
-        output_file,
-        config['paycheck']['net_earnings'],
-        config['paycheck']['pretax'],
-        scale=scale,
-        use_percent=config['transactions']['use_percentages'])
-
-    add_work_transactions(output_file, transactions, config)
+    # take_home = add_paystub(
+    #     output_file,
+    #     config['paycheck']['net_earnings'],
+    #     config['paycheck']['pretax'],
+    #     scale=scale,
+    #     use_percent=config['transactions']['use_percentages'])
+    #
+    take_home = add_income_transactions(output_file, transactions, config)
     add_transactions(output_file, transactions, take_home, config)
 
     output_file.close()

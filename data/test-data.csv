@@ -1,10 +1,12 @@
 ﻿Date,Description,Original Description,Amount,Transaction Type,Category,Account Name,Labels,Notes
 7/31/2018,Tavern,Tavern,30.5,debit,Restaurants,My Credit Card,Bad Category,
+7/23/2018,Paycheck,Paycheck,250.00,credit,Income,Online Savings Account,,
 7/21/2018,My Favorite Restaurant,My Favorite Restaurant,10.85,debit,Restaurants,My Credit Card,,
 7/5/2018,Airbnb,Airbnb,78.98,debit,Hotel,My Credit Card,,
 7/2/2018,Gas Station,Gas Station,2.18,debit,Gas & Fuel,My Credit Card,,
 6/21/2018,A Grocery Store,A Grocery Store,24.54,debit,Groceries,My Credit Card,,
 6/20/2018,Brunch Place #1,Brunch Place #1,22.64,debit,Restaurants,My Credit Card,,
+6/8/2018,Savings Account,Savings Account,1200.00,credit,Transfer,Interest Checking,,
 6/5/2018,Bad Vendor,Beijing Garden,12.94,debit,Restaurants,My Credit Card,,
 6/4/2018,Paycheck,Paycheck,35,credit,Income,My Debit Card,,
 6/1/2018,Evil Telco,Evil Telco,52.28,debit,Bad Category,My Debit Card,,
