@@ -1,6 +1,6 @@
 [time]
 # Dates should be in MM/DD/YYYY format, with optional leading zeros
-start_date = "12/1/2019"
+start_date = "6/1/2020"
 end_date = "12/1/2020"
 
 [transactions]
@@ -21,7 +21,7 @@ ignore_categories = [
 # Mint is a bit verbose on the categories by default, so
 # any category with a sumnmed value below the threshold
 # will get bundled as 'Misc'
-category_threshold = 100
+category_threshold = 50
 
 [paths]
 use_custom_input = true

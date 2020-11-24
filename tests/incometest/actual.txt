@@ -1,3 +1,4 @@
-Wages [20000] Take Home
-Take Home [1312] Home Services
-Take Home [18688] Savings
+Transfer [20000] Total Income
+Income [195] Total Income
+Total Income [1312] Home Services
+Total Income [18883] Savings

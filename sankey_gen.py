@@ -84,7 +84,7 @@ def add_paystub(f: typing.IO,
         val = int(100 * take_home / earnings / scale)
     else:
         val = int(take_home)
-    f.write(f'Wages [{val}] Take Home\n')
+    f.write(f'Wages [{val}] Total Income\n')
 
     return int(take_home)
 
@@ -113,7 +113,7 @@ def filter_transactions(transactions: List[Transaction], start_date: datetime,
 
     filt_trans = []
     for t in transactions:
-        if t.date <= start_date or t.date >= end_date:
+        if t.date < start_date or t.date > end_date:
             continue
 
         if ignore:
@@ -196,8 +196,8 @@ def add_income_transactions(f: typing.IO, transactions: List[Transaction],
         transactions=transactions,
         start_date=start_date,
         end_date=end_date,
-        vendors=[],
-        categories=[],
+        vendors=config['transactions']['ignore_vendors'],
+        categories=config['transactions']['ignore_categories'],
         ignore=True,
         use_labels=config['transactions']['prefer_labels'],
         transaction_type=TransactionType.CREDIT)
@@ -208,10 +208,19 @@ def add_income_transactions(f: typing.IO, transactions: List[Transaction],
         threshold=config['transactions']['category_threshold'])
 
     work_total = sum(summed_categories.values())
-    if config['transactions']['use_percentages']:
-        f.write(f'Wages [100] Take Home\n')
-    else:
-        f.write(f'Wages [{work_total}] Take Home\n')
+
+    sorted_cat = sorted(summed_categories.items(), key=lambda kv: kv[1])
+    sorted_cat.reverse()
+    for name, value in sorted_cat:
+        if config['transactions']['use_percentages']:
+            f.write(f'{name} [{int(100 * value / work_total)}] Total Income\n')
+        else:
+            f.write(f'{name} [{value}] Total Income\n')
+
+    # if config['transactions']['use_percentages']:
+    #     f.write(f'Wages [100] Total Income\n')
+    # else:
+    #     f.write(f'Wages [{work_total}] Total Income\n')
 
     return work_total
 
@@ -249,16 +258,20 @@ def add_transactions(f: typing.IO, transactions: List[Transaction],
     sorted_cat.reverse()
     for name, value in sorted_cat:
         if config['transactions']['use_percentages']:
-            f.write(f'Take Home [{int(100 * value / take_home)}] {name}\n')
+            f.write(f'Total Income [{int(100 * value / take_home)}] {name}\n')
         else:
-            f.write(f'Take Home [{value}] {name}\n')
+            f.write(f'Total Income [{value}] {name}\n')
         expenditure += value
 
     if config['transactions']['use_percentages']:
         savings = int(100 * (take_home - expenditure) / take_home)
     else:
         savings = take_home - expenditure
-    f.write(f'Take Home [{savings}] Savings\n')
+
+    if savings < 0:
+        f.write(f'Unknown [{0 - savings}] Total Income\n')
+    else:
+        f.write(f'Total Income [{savings}] Savings\n')
 
 
 def main(*, config_file: str = None):
