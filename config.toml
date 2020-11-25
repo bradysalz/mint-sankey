@@ -1,7 +1,7 @@
 [time]
 # Dates should be in MM/DD/YYYY format, with optional leading zeros
-start_date = "6/1/2020"
-end_date = "12/1/2020"
+start_date = "11/21/2019"
+end_date = "11/21/2020"
 
 [transactions]
 prefer_labels = false # have labels override categories

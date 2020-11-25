@@ -1,4 +1,0 @@
-Wages [0] Take Home
-Take Home [78] Hotel
-Take Home [12] Misc
-Take Home [-90] Savings
