@@ -53,7 +53,7 @@ output_path = "output-test.txt"
 # All numbers here are assumed to be biweekly
 # Please scale by the appropriate factor if not
 [paycheck]
-net_earnings = 6000
+net_earnings = 0
 
     #### add as many key-value pairs as you have
     [paycheck.pretax]
