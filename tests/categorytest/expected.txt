@@ -1,0 +1,5 @@
+Food & Dining [43] Restaurants
+Food & Dining [36] Fast Food
+Total Income [92] Food & Dining
+Total Income [10] Books
+From Savings [102] Total Income

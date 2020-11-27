@@ -1,0 +1,10 @@
+Food & Dining [43] Restaurants
+Food & Dining [36] Fast Food
+Total Income [79] Food & Dining
+Total Income [3179] Hotel
+Total Income [37] Furnishings
+Total Income [15] Business Services
+Total Income [15] Kids Activities
+Total Income [10] Books
+Total Income [7] Groceries
+From Savings [3342] Total Income

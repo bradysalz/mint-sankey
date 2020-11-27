@@ -1,6 +1,0 @@
-Wages [221] Federal Income Tax
-Wages [66] Social Security
-Wages [1926] Take Home
-Take Home [78] Hotel
-Take Home [12] Misc
-Take Home [1836] Savings

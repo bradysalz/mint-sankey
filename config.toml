@@ -1,0 +1,61 @@
+[time]
+# Dates should be in MM/DD/YYYY format, with optional leading zeros
+start_date = "11/21/2019"
+end_date = "11/21/2020"
+
+[transactions]
+prefer_labels = false # have labels override categories
+use_percentages = false # output in relative percentages
+
+# Vendors to ignore
+ignore_vendors = [
+    "Bad Vendor"
+]
+
+# Categories to ignore
+ignore_categories = [
+    "Transfer",
+    "Credit Card Payment",
+]
+
+# Mint is a bit verbose on the categories by default, so
+# any category with a sumnmed value below the threshold
+# will get bundled as 'Misc'
+category_threshold = 100
+
+[categories]
+"Auto & Transport" = ["Auto Insurance", "Auto Payment", "Gas & Fuel", "Parking", "Public Transportation", "Service & Parts"]
+"Bills & Utilities" = ["Home Phone", "Internet", "Mobile Phone", "Television", "Utilities"]
+"Business Services" = ["Advertising", "Legal", "Office Supplies", "Printing", "Shipping"]
+"Education" = ["Books & Supplies", "Student Loan", "Tuition"]
+"Entertainment" = ["Amusement", "Arts", "Movies & DVDs", "Music", "Newspapers & Magazines"]
+"Financial" = ["Financial Advisor", "Life Insurance"]
+"Food & Dining" = ["Alcohol & Bars", "Coffee Shops", "Fast Food", "Groceries", "Restaurants"]
+"Gifts & Donations" = ["Charity", "Gift"]
+"Health & Fitness" = ["Dentist", "Doctor", "Eyecare", "Gym", "Health Insurance", "Pharmacy", "Sports"]
+"Home" = ["Furnishings", "Home Improvement", "Home Insurance", "Home Services", "Home Supplies", "Lawn & Garden", "Mortgage & Rent"]
+"Kids" = ["Allowance", "Baby Supplies", "Babysitter & Daycare", "Child Support", "Kids Activities", "Toys"]
+"Personal Care" = ["Hair", "Laundry", "Spa & Massage"]
+"Pets" = ["Pet Food & Supplies", "Pet Grooming", "Veterinary"]
+"Shopping" = ["Books", "Clothing", "Electronics & Software", "Hobbies", "Sporting Goods"]
+"Taxes" = ["Federal Tax", "Local Tax", "Property Tax", "Sales Tax", "State Tax"]
+"Travel" = ["Air Travel", "Hotel", "Rental Car & Taxi", "Vacation"]
+
+[paths]
+use_custom_input = true
+input_file = "data/transactions.csv"
+
+use_custom_output = false
+output_path = "output-test.txt"
+
+############## WARNING ##############
+# Make sure not to commit or share anything personal here!
+# All numbers here are assumed to be biweekly
+# Please scale by the appropriate factor if not
+[paycheck]
+net_earnings = 0
+
+    #### add as many key-value pairs as you have
+    [paycheck.pretax]
+#    "Federal Income Tax" = 30
+#    "Social Security" = 5
