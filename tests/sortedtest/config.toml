@@ -1,0 +1,32 @@
+[time]
+# Dates should be in MM/DD/YYYY format, with optional leading zeros
+start_date = "12/10/2019"
+end_date = "12/18/2019"
+
+[transactions]
+prefer_labels = false # have labels override categories
+use_percentages = false # output in relative percentages
+
+# Vendors to ignore
+ignore_vendors = [
+]
+
+# Categories to ignore
+ignore_categories = [
+]
+
+# Mint is a bit verbose on the categories by default, so
+# any category with a sumnmed value below the threshold
+# will get bundled as 'Misc'
+category_threshold = 0
+
+[categories]
+"Food & Dining" = ["Restaurants", "Fast Food"]
+
+[paths]
+use_custom_input = true
+input_file = "tests/sortedtest/data.csv"
+
+use_custom_output = true
+output_path = "tests/sortedtest/actual.txt"
+

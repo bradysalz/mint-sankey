@@ -248,8 +248,11 @@ def add_transactions(f: typing.IO, transactions: List[Transaction],
     used_cats = []
     for key in category_groups:
         key_total = 0
-        for cat in category_groups[key]:
-            for name,value in sorted_cat:
+        for name, value in sorted_cat:
+            if name == key:
+                key_total += value
+                used_cats.append(name)
+            for cat in category_groups[key]:
                 if cat == name:
                     used_cats.append(name)
                     key_total += value
