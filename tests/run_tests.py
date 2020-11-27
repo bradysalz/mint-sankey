@@ -9,16 +9,17 @@ import sankey_gen
 class TestRunner(unittest.TestCase):
 
     def test_main(self):
-        for folder in ["datetest", "incometest"]:
-            sankey_gen.main(config_file=f'tests/{folder}/config.toml')
+        for test_type in ["category", "date", "income"]:
+            path_root = f'tests/{test_type}test/'
+            sankey_gen.main(config_file=f'{path_root}config.toml')
 
-            with open(f'tests/{folder}/actual.txt', 'r') as f:
+            with open(f'{path_root}actual.txt', 'r') as f:
                 actual = f.readlines()
 
-            with open(f'tests/{folder}/expected.txt', 'r') as f:
+            with open(f'{path_root}expected.txt', 'r') as f:
                 expected = f.readlines()
 
-            self.assertListEqual(expected, actual)
+            self.assertListEqual(expected, actual, f'Failed test type {test_type}')
 
 
 if __name__ == '__main__':

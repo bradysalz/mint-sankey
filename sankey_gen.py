@@ -91,7 +91,7 @@ def add_paystub(f: typing.IO,
 
 def filter_transactions(transactions: List[Transaction], start_date: datetime,
                         end_date: datetime, vendors: List[str],
-                        categories: List[str], ignore: bool,
+                        categories: List[str],
                         use_labels: bool,
                         transaction_type: TransactionType = TransactionType.DEBIT) -> List[Transaction]:
     """Filter transactions based on date, vendor, and type
@@ -102,8 +102,6 @@ def filter_transactions(transactions: List[Transaction], start_date: datetime,
         end_date: ignore all transactions after this date
         vendors: filter transactions from these vendors
         categories: filter transactions within these categories
-        ignore: if True, ignore transactions from above filters
-            else, only return transactions from above filters
         use_labels: check labels in addition to categories
         transaction_type: only include Transaction Type if not both
 
@@ -116,24 +114,14 @@ def filter_transactions(transactions: List[Transaction], start_date: datetime,
         if t.date < start_date or t.date > end_date:
             continue
 
-        if ignore:
-            if t.vendor in vendors:
-                continue
+        if t.vendor in vendors:
+            continue
 
-            if use_labels and t.label in categories:
-                continue
+        if use_labels and t.label in categories:
+            continue
 
-            if t.category in categories:
-                continue
-        else:
-            if vendors and t.vendor not in vendors:
-                continue
-
-            if use_labels and t.label not in categories:
-                continue
-
-            if not use_labels and t.category not in categories:
-                continue
+        if t.category in categories:
+            continue
 
         if transaction_type is not TransactionType.BOTH:
             if (transaction_type is TransactionType.DEBIT and not t.debit) or (transaction_type is TransactionType.CREDIT and t.debit):
@@ -198,7 +186,6 @@ def add_income_transactions(f: typing.IO, transactions: List[Transaction],
         end_date=end_date,
         vendors=config['transactions']['ignore_vendors'],
         categories=config['transactions']['ignore_categories'],
-        ignore=True,
         use_labels=config['transactions']['prefer_labels'],
         transaction_type=TransactionType.CREDIT)
 
@@ -239,13 +226,14 @@ def add_transactions(f: typing.IO, transactions: List[Transaction],
     start_date = datetime.strptime(config['time']['start_date'], '%m/%d/%Y')
     end_date = datetime.strptime(config['time']['end_date'], '%m/%d/%Y')
 
+    category_groups = config['categories']
+
     filt_trans = filter_transactions(
         transactions=transactions,
         start_date=start_date,
         end_date=end_date,
         vendors=config['transactions']['ignore_vendors'],
         categories=config['transactions']['ignore_categories'],
-        ignore=True,
         use_labels=config['transactions']['prefer_labels'])
 
     summed_categories = summarize_transactions(
@@ -256,7 +244,23 @@ def add_transactions(f: typing.IO, transactions: List[Transaction],
     expenditure = 0
     sorted_cat = sorted(summed_categories.items(), key=lambda kv: kv[1])
     sorted_cat.reverse()
+
+    used_cats = []
+    for key in category_groups:
+        key_total = 0
+        for cat in category_groups[key]:
+            for name,value in sorted_cat:
+                if cat == name:
+                    used_cats.append(name)
+                    key_total += value
+                    f.write(f'{key} [{value}] {cat}\n')
+        if key_total > 0:
+            expenditure += key_total
+            f.write(f'Total Income [{key_total}] {key}\n')
+
     for name, value in sorted_cat:
+        if name in used_cats:
+            continue
         if config['transactions']['use_percentages']:
             f.write(f'Total Income [{int(100 * value / take_home)}] {name}\n')
         else:
@@ -269,9 +273,9 @@ def add_transactions(f: typing.IO, transactions: List[Transaction],
         savings = take_home - expenditure
 
     if savings < 0:
-        f.write(f'Unknown [{0 - savings}] Total Income\n')
+        f.write(f'From Savings [{0 - savings}] Total Income\n')
     else:
-        f.write(f'Total Income [{savings}] Savings\n')
+        f.write(f'Total Income [{savings}] To Savings\n')
 
 
 def main(*, config_file: str = None):

@@ -21,7 +21,9 @@ ignore_categories = [
 # Mint is a bit verbose on the categories by default, so
 # any category with a sumnmed value below the threshold
 # will get bundled as 'Misc'
-category_threshold = 50
+category_threshold = 100
+
+[categories]
 
 [paths]
 use_custom_input = true
