@@ -245,6 +245,7 @@ def add_transactions(f: typing.IO, transactions: List[Transaction],
     sorted_cat = sorted(summed_categories.items(), key=lambda kv: kv[1])
     sorted_cat.reverse()
 
+    all_cats = {}
     used_cats = []
     for key in category_groups:
         key_total = 0
@@ -256,18 +257,21 @@ def add_transactions(f: typing.IO, transactions: List[Transaction],
                 if cat == name:
                     used_cats.append(name)
                     key_total += value
-                    f.write(f'{key} [{value}] {cat}\n')
+                    all_cats[key, cat] = value
+                    # f.write(f'{key} [{value}] {cat}\n')
         if key_total > 0:
             expenditure += key_total
-            f.write(f'Total Income [{key_total}] {key}\n')
+            all_cats['Total Income', key] = key_total
+            # f.write(f'Total Income [{key_total}] {key}\n')
 
     for name, value in sorted_cat:
         if name in used_cats:
             continue
-        if config['transactions']['use_percentages']:
-            f.write(f'Total Income [{int(100 * value / take_home)}] {name}\n')
-        else:
-            f.write(f'Total Income [{value}] {name}\n')
+        # if config['transactions']['use_percentages']:
+        #     f.write(f'Total Income [{int(100 * value / take_home)}] {name}\n')
+        # else:
+        all_cats['Total Income', name] = value
+        # f.write(f'Total Income [{value}] {name}\n')
         expenditure += value
 
     if config['transactions']['use_percentages']:
@@ -276,9 +280,16 @@ def add_transactions(f: typing.IO, transactions: List[Transaction],
         savings = take_home - expenditure
 
     if savings < 0:
-        f.write(f'From Savings [{0 - savings}] Total Income\n')
+        all_cats['From Savings', 'Total Income'] = 0 - savings
+        # f.write(f'From Savings [{0 - savings}] Total Income\n')
     else:
-        f.write(f'Total Income [{savings}] To Savings\n')
+        all_cats['Total Income', 'From Savings'] = savings
+        # f.write(f'Total Income [{savings}] To Savings\n')
+
+    sorted_cat = sorted(all_cats.items(), key=lambda kv: kv[1])
+    sorted_cat.reverse()
+    for key, value in sorted_cat:
+        f.write(f'{key[0]} [{value}] {key[1]}\n')
 
 
 def main(*, config_file: str = None):
