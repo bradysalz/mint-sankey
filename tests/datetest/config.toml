@@ -1,3 +1,5 @@
+# Test to show dates within the range of data get used but outside the range do not.
+
 [time]
 # Dates should be in MM/DD/YYYY format, with optional leading zeros
 start_date = "11/12/2020"

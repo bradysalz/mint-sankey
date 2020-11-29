@@ -1,3 +1,5 @@
+# Test to show income is displayed correctly
+
 [time]
 # Dates should be in MM/DD/YYYY format, with optional leading zeros
 start_date = "7/1/2018"

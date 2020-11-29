@@ -1,3 +1,5 @@
+# Test to show subcategories are rolled up into their categories
+
 [time]
 # Dates should be in MM/DD/YYYY format, with optional leading zeros
 start_date = "11/10/2020"

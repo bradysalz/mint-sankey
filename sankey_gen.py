@@ -151,14 +151,19 @@ def summarize_transactions(transactions: List[Transaction], use_labels: bool,
         else:
             category = t.category
 
-        if category in category_sums:
-            category_sums[category] += t.amount
+        if t.debit:
+            amount = t.amount
         else:
-            category_sums[category] = t.amount
+            amount = 0 - t.amount
+
+        if category in category_sums:
+            category_sums[category] += amount
+        else:
+            category_sums[category] = amount
 
     misc_amt = 0
     for name in category_sums.copy():
-        if category_sums[name] < threshold:
+        if 0 < category_sums[name] < threshold:
             misc_amt += category_sums.pop(name)
 
     if misc_amt:
@@ -196,20 +201,15 @@ def add_income_transactions(f: typing.IO, transactions: List[Transaction],
 
     work_total = sum(summed_categories.values())
 
-    sorted_cat = sorted(summed_categories.items(), key=lambda kv: kv[1])
-    sorted_cat.reverse()
-    for name, value in sorted_cat:
-        if config['transactions']['use_percentages']:
-            f.write(f'{name} [{int(100 * value / work_total)}] Total Income\n')
-        else:
-            f.write(f'{name} [{value}] Total Income\n')
+    # sorted_cat = sorted(summed_categories.items(), key=lambda kv: kv[1])
+    # sorted_cat.reverse()
+    # for name, value in sorted_cat:
+    #     if config['transactions']['use_percentages']:
+    #         f.write(f'{name} [{int(100 * value / work_total)}] Total Income\n')
+    #     else:
+    #         f.write(f'{name} [{value}] Total Income\n')
 
-    # if config['transactions']['use_percentages']:
-    #     f.write(f'Wages [100] Total Income\n')
-    # else:
-    #     f.write(f'Wages [{work_total}] Total Income\n')
-
-    return work_total
+    return 0 - work_total
 
 
 def add_transactions(f: typing.IO, transactions: List[Transaction],
@@ -234,7 +234,8 @@ def add_transactions(f: typing.IO, transactions: List[Transaction],
         end_date=end_date,
         vendors=config['transactions']['ignore_vendors'],
         categories=config['transactions']['ignore_categories'],
-        use_labels=config['transactions']['prefer_labels'])
+        use_labels=config['transactions']['prefer_labels'],
+        transaction_type=TransactionType.BOTH)
 
     summed_categories = summarize_transactions(
         transactions=filt_trans,
@@ -258,38 +259,33 @@ def add_transactions(f: typing.IO, transactions: List[Transaction],
                     used_cats.append(name)
                     key_total += value
                     all_cats[key, cat] = value
-                    # f.write(f'{key} [{value}] {cat}\n')
         if key_total > 0:
             expenditure += key_total
             all_cats['Total Income', key] = key_total
-            # f.write(f'Total Income [{key_total}] {key}\n')
 
     for name, value in sorted_cat:
         if name in used_cats:
             continue
-        # if config['transactions']['use_percentages']:
-        #     f.write(f'Total Income [{int(100 * value / take_home)}] {name}\n')
-        # else:
         all_cats['Total Income', name] = value
-        # f.write(f'Total Income [{value}] {name}\n')
         expenditure += value
 
-    if config['transactions']['use_percentages']:
-        savings = int(100 * (take_home - expenditure) / take_home)
-    else:
-        savings = take_home - expenditure
+    # if config['transactions']['use_percentages']:
+    #     savings = int(100 * (take_home - expenditure) / take_home)
+    # else:
+    savings = 0 - expenditure
 
     if savings < 0:
         all_cats['From Savings', 'Total Income'] = 0 - savings
-        # f.write(f'From Savings [{0 - savings}] Total Income\n')
     else:
-        all_cats['Total Income', 'From Savings'] = savings
-        # f.write(f'Total Income [{savings}] To Savings\n')
+        all_cats['Total Income', 'To Savings'] = savings
 
     sorted_cat = sorted(all_cats.items(), key=lambda kv: kv[1])
     sorted_cat.reverse()
     for key, value in sorted_cat:
-        f.write(f'{key[0]} [{value}] {key[1]}\n')
+        if value > 0:
+            f.write(f'{key[0]} [{value}] {key[1]}\n')
+        else:
+            f.write(f'{key[1]} [{0 - value}] {key[0]}\n')
 
 
 def main(*, config_file: str = None):

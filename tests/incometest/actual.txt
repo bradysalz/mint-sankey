@@ -1,4 +1,4 @@
-Transfer [20000] Total Income
-Income [195] Total Income
-Total Income [18883] From Savings
+Total Income [18883] To Savings
 Total Income [1312] Home Services
+Income [195] Total Income
+Transfer [20000] Total Income

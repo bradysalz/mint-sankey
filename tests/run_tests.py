@@ -9,7 +9,8 @@ import sankey_gen
 class TestRunner(unittest.TestCase):
 
     def test_main(self):
-        for test_type in ["category", "date", "income", "sorted"]:
+        for test_type in ["category", "date", "income", "positivenegative", "sorted"]:
+            print(f'Running {test_type} test')
             path_root = f'tests/{test_type}test/'
             sankey_gen.main(config_file=f'{path_root}config.toml')
 

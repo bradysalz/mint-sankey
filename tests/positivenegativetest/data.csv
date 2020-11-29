@@ -1,0 +1,6 @@
+﻿Date,Description,Original Description,Amount,Transaction Type,Category,Account Name,Labels,Notes
+"11/10/2020","A book","A book","11.00","debit","Books","CREDIT CARD","",""
+"11/10/2020","Tax Refund","Tax Refund","105.00","credit","Taxes","CREDIT CARD","",""
+"11/12/2020","A partial refund","A partial refund","5.00","credit","Books","CREDIT CARD","",""
+"11/14/2020","Another book","Another book","14.00","debit","Books","CREDIT CARD","",""
+"11/15/2020","Yearly Taxes","Yearly Taxes","33.00","debit","Taxes","CREDIT CARD","",""

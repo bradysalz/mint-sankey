@@ -1,9 +1,9 @@
-# Test to show results are sorted correctly
+# Test to show positive and negative items for the same category
 
 [time]
 # Dates should be in MM/DD/YYYY format, with optional leading zeros
-start_date = "12/10/2019"
-end_date = "12/18/2019"
+start_date = "11/10/2020"
+end_date = "11/18/2020"
 
 [transactions]
 prefer_labels = false # have labels override categories
@@ -27,8 +27,8 @@ category_threshold = 0
 
 [paths]
 use_custom_input = true
-input_file = "tests/sortedtest/data.csv"
+input_file = "tests/positivenegativetest/data.csv"
 
 use_custom_output = true
-output_path = "tests/sortedtest/actual.txt"
+output_path = "tests/positivenegativetest/actual.txt"
 
